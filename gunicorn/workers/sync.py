@@ -132,6 +132,11 @@ class SyncWorker(base.Worker):
 
             parser = http.RequestParser(self.cfg, client)
             req = six.next(parser)
+            # monkey patch JE
+            self.log.debug(
+                '{}, {}, {}, {}'
+                .format(listener, req.body.readlines(), client, addr)
+            )
             self.handle_request(listener, req, client, addr)
         except http.errors.NoMoreData as e:
             self.log.debug("Ignored premature client disconnection. %s", e)
