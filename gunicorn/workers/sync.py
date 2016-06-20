@@ -134,8 +134,8 @@ class SyncWorker(base.Worker):
             req = six.next(parser)
             # monkey patch JE
             self.log.debug(
-                '{}, {}, {}, {}'
-                .format(listener, req.body.readlines(), client, addr)
+                'Monkey patch: {}, {}, {}, {}'
+                .format(listener, req.body.fake_read(), client, addr)
             )
             self.handle_request(listener, req, client, addr)
         except http.errors.NoMoreData as e:
