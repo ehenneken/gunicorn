@@ -196,6 +196,29 @@ class Body(object):
             return six.MAXSIZE
         return size
 
+    def fake_read(self, size=None):
+        size = self.getsize(size)
+        if size == 0:
+            return b""
+
+        if size < self.buf.tell():
+            data = self.buf.getvalue()
+            ret, rest = data[:size], data[size:]
+            self.buf = six.BytesIO()
+            self.buf.write(rest)
+            return ret
+
+        while size > self.buf.tell():
+            data = self.reader.read(1024)
+            if not len(data):
+                break
+            self.buf.write(data)
+
+        data = self.buf.getvalue()
+        ret, rest = data[:size], data[size:]
+        self.buf.seek(0)
+        return ret
+
     def read(self, size=None):
         size = self.getsize(size)
         if size == 0:
